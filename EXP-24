@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+#define BUFFER_SIZE 1024
+
+int main() {
+    int fd;
+    ssize_t ret;
+    char buffer[BUFFER_SIZE];
+
+    // Creating a file
+    fd = creat("test_file.txt", 0644);
+    if (fd == -1) {
+        perror("Error creating file");
+        exit(EXIT_FAILURE);
+    }
+    printf("File created successfully.\n");
+
+    // Writing to a file
+    ret = write(fd, "Hello, this is a test file.\n", 28);
+    if (ret == -1) {
+        perror("Error writing to file");
+        exit(EXIT_FAILURE);
+    }
+    printf("Data written to file successfully.\n");
+
+    // Closing the file
+    close(fd);
+
+    // Opening the file for reading
+    fd = open("test_file.txt", O_RDONLY);
+    if (fd == -1) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+    printf("File opened for reading.\n");
+
+    // Reading from the file
+    ret = read(fd, buffer, BUFFER_SIZE);
+    if (ret == -1) {
+        perror("Error reading from file");
+        exit(EXIT_FAILURE);
+    }
+    buffer[ret] = '\0'; // Null-terminate the string
+    printf("Data read from file: %s\n", buffer);
+
+    // Closing the file
+    close(fd);
+
+    // Deleting the file
+    ret = unlink("test_file.txt");
+    if (ret == -1) {
+        perror("Error deleting file");
+        exit(EXIT_FAILURE);
+    }
+    printf("File deleted successfully.\n");
+
+    return 0;
+}
